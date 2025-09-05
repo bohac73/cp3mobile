@@ -9,7 +9,7 @@ import {
   RefreshControl,
 } from 'react-native';
 
-const API = 'https://jsonplaceholder.typicode.com/posts';
+const API = ' https://www.demonslayer-api.com/api/v1/characters?limit=45';
 
 export default function ListScreen({ navigation }) {
   const [data, setData] = useState([]);
