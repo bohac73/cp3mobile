@@ -87,9 +87,9 @@ export default function DetailScreen({ route }) {
 
       <View style={styles.metaBox}>
         <Text style={styles.metaText}>Idade: {item.age}</Text>
-        <Text style={styles.metaText}>Gênero: {item.gender}</Text>
         <Text style={styles.metaText}>Raça: {item.race}</Text>
-      </View>
+        <Text style={styles.metaText}>Gênero: {item.gender}</Text>
+        </View>
 
       <Text style={styles.sectionTitle}>Descrição</Text>
       <Text style={styles.body}>{item.description}</Text>
@@ -172,10 +172,8 @@ const styles = StyleSheet.create({
   quote: {
     fontSize: 16,
     fontStyle: "italic",
-    color: "#555",
-    backgroundColor: "#f9f9f9",
-    borderLeftWidth: 4,
-    borderLeftColor: "#888",
+    color: "#f1f1f1",
+    backgroundColor: "#000000",
     padding: 10,
     borderRadius: 8,
     marginTop: 6,

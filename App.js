@@ -14,6 +14,7 @@ export default function App() {
           name="Lista"
           component={ListScreen}
           options={{ title: 'Demon Slayer' }}
+
         />
         <Stack.Screen
           name="Detalhe"
