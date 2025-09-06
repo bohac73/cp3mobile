@@ -99,15 +99,6 @@ export default function ListScreen({ navigation }) {
         <Text style={styles.title} numberOfLines={1}>
           {item.name}
         </Text>
-        <Text style={styles.meta}>
-          {item.age} anos • {item.gender} • {item.race}
-        </Text>
-        {item.quote ? (
-          <Text style={styles.quote} numberOfLines={2}>
-            “{item.quote}”
-          </Text>
-        ) : null}
-        <Text style={styles.link}>Ver detalhes →</Text>
       </View>
     </Pressable>
   );
@@ -128,34 +119,28 @@ export default function ListScreen({ navigation }) {
 const styles = StyleSheet.create({
   list: { padding: 16 },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     marginBottom: 16,
     overflow: "hidden",
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: "#FFFFFF",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     flexDirection: "row",
   },
   image: {
-    width: 100,
-    height: 120,
+    width: 80,
+    height: 100,
     resizeMode: "cover",
   },
   info: {
     flex: 1,
-    padding: 12,
-    justifyContent: "space-between",
+    padding: 40,
+    justifyContent: "center",
   },
-  title: { fontSize: 18, fontWeight: "bold", marginBottom: 6, color: "#222" },
-  meta: { fontSize: 14, color: "#555", marginBottom: 6 },
-  quote: {
-    fontSize: 13,
-    fontStyle: "italic",
-    color: "#666",
-    marginBottom: 8,
+  title: { fontSize: 18, fontWeight: "bold", marginBottom: 6, color: "#222",
   },
   link: { fontWeight: "600", color: "#0077cc" },
   center: {
