@@ -9,21 +9,32 @@ import {
   RefreshControl,
 } from 'react-native';
 
-const API = ' https://www.demonslayer-api.com/api/v1/characters?limit=45';
+const API = 'https://www.demonslayer-api.com/api/v1/characters?limit=45';
 
 export default function ListScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
-
+  const normalize = (arr) =>
+    arr.map((c, idx) => ({
+      id: String(c.id ?? idx),
+      name: c.name ?? "Sem nome",
+      image:
+        c.image ??
+        c.img ??
+        (Array.isArray(c.images)
+          ? c.images[0]?.url ?? c.images[0]
+          : null),
+    }));
   const load = useCallback(async (signal) => {
     try {
       setError(null);
       const res = await fetch(API, { signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      setData(json);
+      const raw = Array.isArray(json) ? json : json.content ?? [];
+      setData(normalize(raw));
     } catch (e) {
       if (e.name !== 'AbortError') setError(e.message);
     } finally {
@@ -77,10 +88,10 @@ export default function ListScreen({ navigation }) {
       onPress={() => navigation.navigate('Detalhe', { id: item.id })}
     >
       <Text style={styles.title} numberOfLines={1}>
-        {item.title}
+        {item.name}
       </Text>
       <Text style={styles.subtitle} numberOfLines={2}>
-        {item.body}
+        {item.age}
       </Text>
       <Text style={styles.link}>Ver detalhes →</Text>
     </Pressable>

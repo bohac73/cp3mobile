@@ -13,7 +13,7 @@ export default function App() {
         <Stack.Screen
           name="Lista"
           component={ListScreen}
-          options={{ title: 'Posts' }}
+          options={{ title: 'Demon Slayer' }}
         />
         <Stack.Screen
           name="Detalhe"

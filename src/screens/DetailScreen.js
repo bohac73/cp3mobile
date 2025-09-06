@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 
-const API = 'https://jsonplaceholder.typicode.com/posts';
+const API = 'https://www.demonslayer-api.com/api/v1/characters';
 
 export default function DetailScreen({ route }) {
   const { id } = route.params;
@@ -14,10 +14,12 @@ export default function DetailScreen({ route }) {
 
     (async () => {
       try {
-        const res = await fetch(`${API}/${id}`, { signal: controller.signal });
+        const res = await fetch(`${API}?id=${id}`, { signal: controller.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
-        setItem(json);
+        const raw = Array.isArray(json) ? json : json.content ?? [];
+        const first = raw[0];
+        setItem(first ? normalize(first) : null);
       } catch (e) {
         if (e.name !== 'AbortError') setError(e.message);
       } finally {
@@ -27,6 +29,20 @@ export default function DetailScreen({ route }) {
 
     return () => controller.abort();
   }, [id]);
+
+  const normalize = (c) => ({
+    id: String(c.id),
+    name: c.name ?? "Sem nome",
+    age: c.age ?? "-",
+    gender: c.gender ?? "-",
+    race: c.race ?? "-",
+    description: c.description ?? "",
+    quote: c.quote ?? "",
+    image:
+      c.image ??
+      c.img ??
+      (Array.isArray(c.images) ? c.images[0]?.url ?? c.images[0] : null),
+  });
 
   if (loading) {
     return (
@@ -56,12 +72,10 @@ export default function DetailScreen({ route }) {
   return (
     <View style={styles.container}>
       <Text style={styles.id}>ID: {item.id}</Text>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.body}>{item.body}</Text>
+      <Text style={styles.title}>{item.name}</Text>
+      <Text style={styles.body}>{item.age}</Text>
 
-      <View style={styles.meta}>
-        <Text style={styles.metaText}>userId: {item.userId}</Text>
-      </View>
+
     </View>
   );
 }
