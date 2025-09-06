@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,19 +7,25 @@ import {
   Pressable,
   StyleSheet,
   RefreshControl,
-} from 'react-native';
+  Image,
+} from "react-native";
 
-const API = 'https://www.demonslayer-api.com/api/v1/characters?limit=45';
+const API = "https://www.demonslayer-api.com/api/v1/characters?limit=45";
 
 export default function ListScreen({ navigation }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
+
   const normalize = (arr) =>
     arr.map((c, idx) => ({
       id: String(c.id ?? idx),
       name: c.name ?? "Sem nome",
+      age: c.age ?? "-",
+      gender: c.gender ?? "-",
+      race: c.race ?? "-",
+      quote: c.quote ?? "",
       image:
         c.image ??
         c.img ??
@@ -27,6 +33,7 @@ export default function ListScreen({ navigation }) {
           ? c.images[0]?.url ?? c.images[0]
           : null),
     }));
+
   const load = useCallback(async (signal) => {
     try {
       setError(null);
@@ -36,7 +43,7 @@ export default function ListScreen({ navigation }) {
       const raw = Array.isArray(json) ? json : json.content ?? [];
       setData(normalize(raw));
     } catch (e) {
-      if (e.name !== 'AbortError') setError(e.message);
+      if (e.name !== "AbortError") setError(e.message);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -59,7 +66,7 @@ export default function ListScreen({ navigation }) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
-        <Text>Carregando…</Text>
+        <Text style={styles.loadingText}>Carregando…</Text>
       </View>
     );
   }
@@ -67,7 +74,7 @@ export default function ListScreen({ navigation }) {
   if (error) {
     return (
       <View style={styles.center}>
-        <Text style={{ marginBottom: 12 }}>Erro: {error}</Text>
+        <Text style={styles.errorText}>Erro: {error}</Text>
         <Pressable
           onPress={() => {
             setLoading(true);
@@ -85,15 +92,23 @@ export default function ListScreen({ navigation }) {
   const renderItem = ({ item }) => (
     <Pressable
       style={styles.card}
-      onPress={() => navigation.navigate('Detalhe', { id: item.id })}
+      onPress={() => navigation.navigate("Detalhe", { id: item.id })}
     >
-      <Text style={styles.title} numberOfLines={1}>
-        {item.name}
-      </Text>
-      <Text style={styles.subtitle} numberOfLines={2}>
-        {item.age}
-      </Text>
-      <Text style={styles.link}>Ver detalhes →</Text>
+      {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
+      <View style={styles.info}>
+        <Text style={styles.title} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={styles.meta}>
+          {item.age} anos • {item.gender} • {item.race}
+        </Text>
+        {item.quote ? (
+          <Text style={styles.quote} numberOfLines={2}>
+            “{item.quote}”
+          </Text>
+        ) : null}
+        <Text style={styles.link}>Ver detalhes →</Text>
+      </View>
     </Pressable>
   );
 
@@ -113,25 +128,50 @@ export default function ListScreen({ navigation }) {
 const styles = StyleSheet.create({
   list: { padding: 16 },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    marginBottom: 16,
+    overflow: "hidden",
+    elevation: 3,
+    shadowColor: "#000",
     shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    flexDirection: "row",
   },
-  title: { fontSize: 16, fontWeight: '600', marginBottom: 6 },
-  subtitle: { color: '#444', marginBottom: 8 },
-  link: { fontWeight: '500', textDecorationLine: 'underline' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 },
+  image: {
+    width: 100,
+    height: 120,
+    resizeMode: "cover",
+  },
+  info: {
+    flex: 1,
+    padding: 12,
+    justifyContent: "space-between",
+  },
+  title: { fontSize: 18, fontWeight: "bold", marginBottom: 6, color: "#222" },
+  meta: { fontSize: 14, color: "#555", marginBottom: 6 },
+  quote: {
+    fontSize: 13,
+    fontStyle: "italic",
+    color: "#666",
+    marginBottom: 8,
+  },
+  link: { fontWeight: "600", color: "#0077cc" },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    backgroundColor: "#fafafa",
+  },
+  loadingText: { marginTop: 8, fontSize: 16, color: "#555" },
+  errorText: { marginBottom: 12, fontSize: 16, color: "red" },
   button: {
-    backgroundColor: '#111',
+    backgroundColor: "#111",
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
   },
-  buttonText: { color: '#fff', fontWeight: '600' },
+  buttonText: { color: "#fff", fontWeight: "600" },
 });

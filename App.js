@@ -18,7 +18,7 @@ export default function App() {
         <Stack.Screen
           name="Detalhe"
           component={DetailScreen}
-          options={{ title: 'Detalhe do Post' }}
+          options={{ title: 'Detalhes' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
